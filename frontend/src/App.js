@@ -12,7 +12,7 @@ function App() {
     fetchUsers(apiurl);
   }, []);
 
-  // fetch user
+
   const fetchUsers = (apiurl) => {
     fetch(`${apiurl}/users`)
       .then((response) => response.json())
@@ -36,7 +36,7 @@ function App() {
       .catch((error) => console.error('Error creating user:', error));
   };
 
-  // handle update user
+
   const handleUpdateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${selectedUser.id}`, {

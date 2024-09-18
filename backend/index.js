@@ -18,7 +18,7 @@ app.use('/users', userRoutes);
 const startServer = async () => {
     try {
         await db.sequelize.sync();
-        console.log("Database synced successfully.");
+        console.log("Connected to database successfully.");
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
@@ -27,4 +27,5 @@ const startServer = async () => {
     }
 };
 
+// calling the function
 startServer();
