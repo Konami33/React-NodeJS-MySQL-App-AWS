@@ -53,7 +53,7 @@ function App() {
       .catch((error) => console.error('Error updating user:', error));
   };
   
-  // handle user
+
   const handleDeleteUser = (id) => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${id}`, {
