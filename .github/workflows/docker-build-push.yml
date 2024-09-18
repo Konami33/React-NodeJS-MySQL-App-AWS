@@ -37,16 +37,23 @@ jobs:
         id: changes
         run: |
           git fetch origin main
-          
+
+          # Determine the base commit
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_COMMIT=${{ github.event.pull_request.base.sha }}
+          else
+            BASE_COMMIT=$(git rev-parse origin/main)
+          fi
+
           # Check if frontend changed
-          if git diff --name-only origin/main..HEAD | grep '^frontend/' > /dev/null; then
+          if git diff --name-only $BASE_COMMIT HEAD | grep '^frontend/' > /dev/null; then
             echo "frontend_changed=true" >> $GITHUB_OUTPUT
           else
             echo "frontend_changed=false" >> $GITHUB_OUTPUT
           fi
 
           # Check if backend changed
-          if git diff --name-only origin/main..HEAD | grep '^backend/' > /dev/null; then
+          if git diff --name-only $BASE_COMMIT HEAD | grep '^backend/' > /dev/null; then
             echo "backend_changed=true" >> $GITHUB_OUTPUT
           else
             echo "backend_changed=false" >> $GITHUB_OUTPUT
@@ -66,3 +73,11 @@ jobs:
           else
             echo "No changes detected in frontend or backend."
           fi
+
+      - name: Debug Information
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Base commit: $BASE_COMMIT"
+          echo "Current commit: ${{ github.sha }}"
+          echo "Changed files:"
+          git diff --name-only $BASE_COMMIT ${{ github.sha }}
