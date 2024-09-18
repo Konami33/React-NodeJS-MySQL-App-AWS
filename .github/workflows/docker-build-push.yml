@@ -38,13 +38,17 @@ jobs:
           frontend_changed=false
           backend_changed=false
 
+          # Get the latest commit hashes (fallback to head if not available)
+          previous_commit="${{ github.event.before || 'HEAD^' }}"
+          current_commit="${{ github.sha }}"
+
           # Check if frontend changed
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^frontend/' > /dev/null; then
+          if git diff --name-only $previous_commit $current_commit | grep '^frontend/' > /dev/null; then
             frontend_changed=true
           fi
 
           # Check if backend changed
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^backend/' > /dev/null; then
+          if git diff --name-only $previous_commit $current_commit | grep '^backend/' > /dev/null; then
             backend_changed=true
           fi
 
@@ -68,4 +72,5 @@ jobs:
           else
             echo "No changes detected in frontend or backend directories, skipping build."
             exit 0
+
 

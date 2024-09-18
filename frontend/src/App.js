@@ -11,7 +11,8 @@ function App() {
     console.log('apiurl:', apiurl);
     fetchUsers(apiurl);
   }, []);
-  
+
+  // fetch user
   const fetchUsers = (apiurl) => {
     fetch(`${apiurl}/users`)
       .then((response) => response.json())
@@ -19,6 +20,7 @@ function App() {
       .catch((error) => console.error('Error fetching users:', error));
   };
 
+  // handle Create user
   const handleCreateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users`, {
