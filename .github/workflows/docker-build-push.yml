@@ -15,7 +15,6 @@ on:
       - 'backend/**'
 
 jobs:
-  # Define the build job
   build-and-push:
     runs-on: ubuntu-latest
     env:
@@ -27,31 +26,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker Buildx for multi-platform builds (optional but recommended)
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # Step 3: Log in to Docker Hub
+      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Step 4: Determine which directories have changed (frontend, backend, or both)
+      # Step 3: Check for frontend and backend changes
       - name: Check for frontend and backend changes
         id: changes
         run: |
+          # Initialize variables
+          frontend_changed=false
+          backend_changed=false
+
           # Check if frontend changed
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^frontend/' > /dev/null; then
-            echo "frontend_changed=true" >> $GITHUB_ENV
+            frontend_changed=true
           fi
 
           # Check if backend changed
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^backend/' > /dev/null; then
-            echo "backend_changed=true" >> $GITHUB_ENV
+            backend_changed=true
           fi
 
-      # Step 5: Conditionally run the appropriate make command
+          # Export the environment variables
+          echo "frontend_changed=$frontend_changed" >> $GITHUB_ENV
+          echo "backend_changed=$backend_changed" >> $GITHUB_ENV
+
+      # Step 4: Run the appropriate make command based on changes
       - name: Build and Push Docker Images
         run: |
+          # Load environment variables
           if [[ "$frontend_changed" == "true" && "$backend_changed" == "true" ]]; then
             echo "Both frontend and backend have changed, running 'make all'."
             make all
@@ -64,3 +68,4 @@ jobs:
           else
             echo "No changes detected in frontend or backend directories, skipping build."
             exit 0
+
