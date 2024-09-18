@@ -20,7 +20,6 @@ function App() {
       .catch((error) => console.error('Error fetching users:', error));
   };
 
-  // handle Create user
   const handleCreateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users`, {
@@ -37,6 +36,7 @@ function App() {
       .catch((error) => console.error('Error creating user:', error));
   };
 
+  // handle update user
   const handleUpdateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${selectedUser.id}`, {
@@ -52,7 +52,8 @@ function App() {
       })
       .catch((error) => console.error('Error updating user:', error));
   };
-
+  
+  // handle delete user
   const handleDeleteUser = (id) => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${id}`, {

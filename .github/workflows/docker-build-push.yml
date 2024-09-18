@@ -22,55 +22,47 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
-      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 3: Check for frontend and backend changes
       - name: Check for frontend and backend changes
         id: changes
         run: |
-          # Initialize variables
-          frontend_changed=false
-          backend_changed=false
-
-          # Get the latest commit hashes (fallback to head if not available)
-          previous_commit="${{ github.event.before || 'HEAD^' }}"
-          current_commit="${{ github.sha }}"
-
+          git fetch origin main
+          
           # Check if frontend changed
-          if git diff --name-only $previous_commit $current_commit | grep '^frontend/' > /dev/null; then
-            frontend_changed=true
+          if git diff --name-only origin/main..HEAD | grep '^frontend/' > /dev/null; then
+            echo "frontend_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend_changed=false" >> $GITHUB_OUTPUT
           fi
 
           # Check if backend changed
-          if git diff --name-only $previous_commit $current_commit | grep '^backend/' > /dev/null; then
-            backend_changed=true
+          if git diff --name-only origin/main..HEAD | grep '^backend/' > /dev/null; then
+            echo "backend_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "backend_changed=false" >> $GITHUB_OUTPUT
           fi
 
-          # Export the environment variables
-          echo "frontend_changed=$frontend_changed" >> $GITHUB_ENV
-          echo "backend_changed=$backend_changed" >> $GITHUB_ENV
-
-      # Step 4: Run the appropriate make command based on changes
       - name: Build and Push Docker Images
         run: |
-          # Load environment variables
-          if [[ "$frontend_changed" == "true" && "$backend_changed" == "true" ]]; then
+          if [[ "${{ steps.changes.outputs.frontend_changed }}" == "true" && "${{ steps.changes.outputs.backend_changed }}" == "true" ]]; then
             echo "Both frontend and backend have changed, running 'make all'."
             make all
-          elif [[ "$frontend_changed" == "true" ]]; then
+          elif [[ "${{ steps.changes.outputs.frontend_changed }}" == "true" ]]; then
             echo "Frontend has changed, running 'make all-frontend'."
             make all-frontend
-          elif [[ "$backend_changed" == "true" ]]; then
+          elif [[ "${{ steps.changes.outputs.backend_changed }}" == "true" ]]; then
             echo "Backend has changed, running 'make all-backend'."
             make all-backend
           else
-            echo "No changes detected in frontend or backend directories, skipping build."
-            exit 0
-
-
+            echo "No changes detected in frontend or backend."
+          fi
