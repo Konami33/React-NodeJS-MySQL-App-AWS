@@ -12,6 +12,7 @@ function App() {
     fetchUsers(apiurl);
   }, []);
 
+  //fetch user
   const fetchUsers = (apiurl) => {
     fetch(`${apiurl}/users`)
       .then((response) => response.json())

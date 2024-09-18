@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use('/', homeRoutes);
 app.use('/users', userRoutes);
 
-
+// start server
 const startServer = async () => {
     try {
         await db.sequelize.sync();
