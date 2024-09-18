@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// Main function
 function App() {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({ username: '', email: '' });
@@ -13,14 +12,14 @@ function App() {
     fetchUsers(apiurl);
   }, []);
 
-  // fetch user
+
   const fetchUsers = (apiurl) => {
     fetch(`${apiurl}/users`)
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching users:', error));
   };
-  // handle user
+
   const handleCreateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users`, {
@@ -37,7 +36,7 @@ function App() {
       .catch((error) => console.error('Error creating user:', error));
   };
 
-  // update user
+
   const handleUpdateUser = () => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${selectedUser.id}`, {
@@ -53,8 +52,7 @@ function App() {
       })
       .catch((error) => console.error('Error updating user:', error));
   };
-  
-  // handle Delete User
+
   const handleDeleteUser = (id) => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${id}`, {

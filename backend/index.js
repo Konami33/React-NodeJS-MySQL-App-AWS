@@ -9,13 +9,13 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// user cors
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/', homeRoutes);
 app.use('/users', userRoutes);
 
-// start Server
+
 const startServer = async () => {
     try {
         await db.sequelize.sync();
