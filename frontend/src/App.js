@@ -12,7 +12,7 @@ function App() {
     fetchUsers(apiurl);
   }, []);
 
-
+  // fetch user
   const fetchUsers = (apiurl) => {
     fetch(`${apiurl}/users`)
       .then((response) => response.json())
@@ -53,7 +53,7 @@ function App() {
       .catch((error) => console.error('Error updating user:', error));
   };
   
-
+  // handle Delete User
   const handleDeleteUser = (id) => {
     const apiurl = process.env.REACT_APP_API_BASE_URL;
     fetch(`${apiurl}/users/${id}`, {

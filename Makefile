@@ -55,7 +55,7 @@ clean-backend:
 clean: clean-frontend clean-backend
 
 # Run all for both frontend and backend in parallel
-all: frontend backend
+all: all-frontend all-backend
 
 .PHONY: build-frontend tag-frontend push-frontend all-frontend clean-frontend \
         build-backend tag-backend push-backend all-backend clean-backend clean all
