@@ -2,11 +2,11 @@
 DOCKER_USERNAME = konami98
 
 # Frontend Variables
-FRONTEND_IMAGE_NAME = React-frontend
+FRONTEND_IMAGE_NAME = react-frontend
 FRONTEND_TAG = latest
 
 # Backend Variables
-BACKEND_IMAGE_NAME = Nodejs-backend
+BACKEND_IMAGE_NAME = nodejs-backend
 BACKEND_TAG = latest
 
 # Frontend Commands
